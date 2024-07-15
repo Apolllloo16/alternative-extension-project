@@ -62,6 +62,9 @@ void TransitionLevel::update(float dt)
 	case State::PRE_THREE:
 		explain.setString("Move with WASD.\nMove in time with the claps.\nAvoid Tanks and Pits.\nThere is a checkpoint.\nYou will be assisted.\nKind of.\nHit Enter.\nGood Luck.");
 		break;
+	case State::ENDLESS:
+		explain.setString("This is the runner mode but endless.\nKick (enter) wooden boxes.\nJump over (space) metal ones.\nYou got this.\nGood Luck.\nHit Enter");
+		break;
 	case State::ENDGAME:
 		runResults* results = gameState->getResults();
 		std::string resultsString;

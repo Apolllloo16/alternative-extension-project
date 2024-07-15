@@ -17,9 +17,28 @@ RunnerLevel::RunnerLevel(sf::RenderWindow* hwnd, Input* in, GameState* gs, Audio
 	textMan = tm;
 	std::srand(static_cast<unsigned>(std::time(nullptr)));
 
+	//set up life points
+	life1.setFillColor(sf::Color::Red);
+	life1.setRadius(15);
+	life1.setOutlineColor(sf::Color::Black);
+	life1.setOutlineThickness(2);
+	life1.setPosition(700, 30);
+
+	life2.setFillColor(sf::Color::Red);
+	life2.setRadius(15);
+	life2.setOutlineColor(sf::Color::Black);
+	life2.setOutlineThickness(2);
+	life2.setPosition(750, 30);
+
+	life3.setFillColor(sf::Color::Red);
+	life3.setRadius(15);
+	life3.setOutlineColor(sf::Color::Black);
+	life3.setOutlineThickness(2);
+	life3.setPosition(800, 30);
+
 	// setup BGs as ten images next to each other. base dimensions 1024x1024
 	float bgScalar = hwnd->getSize().y / 1024.0f;
-	for (int i = 0; i < 21; ++i)
+	for (int i = 0; i < 1000; ++i)
 	{
 		GameObject bg;
 		bg.setTexture(&textMan->getTexture("bg_Scroll"));
@@ -28,6 +47,7 @@ RunnerLevel::RunnerLevel(sf::RenderWindow* hwnd, Input* in, GameState* gs, Audio
 		BGs.push_back(bg);
 	}
 
+	
 	distance = 19 * BGs.back().getSize().x - 30;
 	finishLine.setSize(sf::Vector2f(10, window->getSize().y * 0.2));
 	finishLine.setPosition(distance, window->getSize().y * 0.5);
@@ -41,6 +61,7 @@ RunnerLevel::RunnerLevel(sf::RenderWindow* hwnd, Input* in, GameState* gs, Audio
 		// harder in the back half.
 		if (placementIndex > distance / 2) placementIndex -= getRandomInt(100, 250);	
 		if (placementIndex > distance) break;
+	
 		objects += 1;
 		GameObject newObj;
 		newObj.setPosition(placementIndex, window->getSize().y * 0.6);
@@ -97,6 +118,7 @@ RunnerLevel::~RunnerLevel()
 {
 }
 
+
 void RunnerLevel::handleInput(float dt)
 {
 	
@@ -123,21 +145,63 @@ bool RunnerLevel::colliding(GameObject obj)
 
 void RunnerLevel::update(float dt)
 {
-	// race over;
-	if (travelled >= distance)
+
+
+	if (p.getPosition().y > window->getSize().y * 0.6)
+	{
+		p.setPosition(30, window->getSize().y * 0.6);
+	}
+
+	if (endless)
+	{
+
+	}
+
+	if (gameState->getCurrentState() ==State::ENDLESS )
+	{
+		endless = true;
+	}
+	
+	if (!endless)
+	{
+		// race over;
+		if (travelled >= distance)
+		{
+			gameState->addResult("l2deaths", hits);
+			gameState->addResult("l2time", time);
+			if (gameState->getSingleRun())
+			{
+				gameState->setCurrentState(State::ENDGAME);
+			}
+			else
+			{
+				gameState->setCurrentState(State::PRE_THREE);
+			}
+			return;
+		}
+
+	}
+
+	if (hits == 1)
+	{
+		life3.setFillColor(sf::Color::Transparent);
+		life3.setOutlineColor(sf::Color::Transparent);
+	}
+	else if (hits == 2)
+	{
+		life2.setFillColor(sf::Color::Transparent);
+		life2.setOutlineColor(sf::Color::Transparent);
+	}
+	else if (hits==3)
 	{
 		gameState->addResult("l2deaths", hits);
 		gameState->addResult("l2time", time);
-		if (gameState->getSingleRun())
-		{
-			gameState->setCurrentState(State::ENDGAME);
-		}
-		else
-		{
-			gameState->setCurrentState(State::PRE_THREE);
-		}
-		return;
+		
+		gameState->setCurrentState(State::ENDGAME);
+		
 	}
+	
+
 
 	time += dt;
 	p.update(dt);
@@ -203,7 +267,10 @@ void RunnerLevel::update(float dt)
 	// check for collisions
 	if (p.isDamaged())
 	{
-		// if you're damaged you can keep going.
+		if (endless)
+		{
+	
+		}
 		return;
 	}
 	for (int i = 0; i < kickables.size(); ++i)// k : kickables)
@@ -253,17 +320,38 @@ void RunnerLevel::update(float dt)
 void RunnerLevel::render()
 {
 	beginDraw();
-	for(GameObject bg : BGs) window->draw(bg);
-	window->draw(moon);
-	for (GameObject j : jumpables) window->draw(j);
-	for (GameObject k : kickables) window->draw(k);
-	window->draw(finishLine);
-	window->draw(p);
-	window->draw(progressLine);
-	window->draw(destinationPoint);
-	window->draw(progressP);
-	for (GameObject e : explosions) window->draw(e);
-	window->draw(moon);
+	if (!endless)
+	{
+		for (GameObject bg : BGs) window->draw(bg);
+		window->draw(moon);
+		for (GameObject j : jumpables) window->draw(j);
+		for (GameObject k : kickables) window->draw(k);
+		window->draw(finishLine);
+		window->draw(p);
+		window->draw(progressLine);
+		window->draw(destinationPoint);
+		window->draw(progressP);
+		for (GameObject e : explosions) window->draw(e);
+		window->draw(moon);
+	}
+	if (endless)
+	{
+		for (GameObject bg : BGs) window->draw(bg);
+		window->draw(moon);
+		for (GameObject j : jumpables) window->draw(j);
+		for (GameObject k : kickables) window->draw(k);
+		window->draw(finishLine);
+		window->draw(p);
+		window->draw(progressLine);
+		window->draw(destinationPoint);
+		window->draw(progressP);
+		window->draw(life1);
+		window->draw(life2);
+		window->draw(life3);
+		for (GameObject e : explosions) window->draw(e);
+		window->draw(moon);
+	}
+	
 	endDraw();
 }
 
@@ -274,6 +362,8 @@ void RunnerLevel::reset()
 	time = 0.f;
 	objects = 0.f;
 	travelled = 0.f;
+	endless = false;
+	
 
 	// setup Player
 	p.setPosition(30, window->getSize().y * 0.6);
@@ -283,9 +373,14 @@ void RunnerLevel::reset()
 	kickables.clear();
 	jumpables.clear();
 
+	life2.setFillColor(sf::Color::Red);
+	life2.setOutlineColor(sf::Color::Black);
+	life3.setFillColor(sf::Color::Red);
+	life3.setOutlineColor(sf::Color::Black);
+
 	// setup BGs as ten images next to each other. base dimensions 1024x1024
 	float bgScalar = window->getSize().y / 1024.0f;
-	for (int i = 0; i < 21; ++i)
+	for (int i = 0; i < 1000; ++i)
 	{
 		GameObject bg;
 		bg.setTexture(&textMan->getTexture("bg_Scroll"));
@@ -334,3 +429,5 @@ void RunnerLevel::reset()
 	finishLine.setPosition(distance, window->getSize().y * 0.5);
 	p.setDamaged(0.5);
 }
+
+
