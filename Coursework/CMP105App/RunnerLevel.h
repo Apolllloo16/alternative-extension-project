@@ -35,6 +35,7 @@ private:
 	GameObject finishLine;
 
 	float distance;
+	float distance2;
 	float travelled = 0.f;
 	float speed;
 

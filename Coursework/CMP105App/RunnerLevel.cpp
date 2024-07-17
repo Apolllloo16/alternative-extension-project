@@ -49,18 +49,19 @@ RunnerLevel::RunnerLevel(sf::RenderWindow* hwnd, Input* in, GameState* gs, Audio
 
 	
 	distance = 19 * BGs.back().getSize().x - 30;
+	distance2 = 1000 * BGs.back().getSize().x - 30;
 	finishLine.setSize(sf::Vector2f(10, window->getSize().y * 0.2));
 	finishLine.setPosition(distance, window->getSize().y * 0.5);
 	finishLine.setFillColor(sf::Color::Yellow);
 
 	float placementIndex = 0.f;
-	while (placementIndex < distance)
+	while (placementIndex < distance2)
 	{
 		// go forward a random distance:
 		placementIndex += getRandomInt(650,800);
 		// harder in the back half.
-		if (placementIndex > distance / 2) placementIndex -= getRandomInt(100, 250);	
-		if (placementIndex > distance) break;
+		if (placementIndex > distance2 / 2) placementIndex -= getRandomInt(100, 250);	
+		if (placementIndex > distance2) break;
 	
 		objects += 1;
 		GameObject newObj;
@@ -340,11 +341,7 @@ void RunnerLevel::render()
 		window->draw(moon);
 		for (GameObject j : jumpables) window->draw(j);
 		for (GameObject k : kickables) window->draw(k);
-		window->draw(finishLine);
 		window->draw(p);
-		window->draw(progressLine);
-		window->draw(destinationPoint);
-		window->draw(progressP);
 		window->draw(life1);
 		window->draw(life2);
 		window->draw(life3);
@@ -390,13 +387,13 @@ void RunnerLevel::reset()
 	}
 
 	float placementIndex = 0.f;
-	while (placementIndex < distance)
+	while (placementIndex < distance2)
 	{
 		// go forward a random distance:
 		placementIndex += getRandomInt(650, 800);
 		// harder in the back half.
-		if (placementIndex > distance / 2) placementIndex -= getRandomInt(100, 250);
-		if (placementIndex > distance) break;
+		if (placementIndex > distance2 / 2) placementIndex -= getRandomInt(100, 250);
+		if (placementIndex > distance2) break;
 		objects += 1;
 		GameObject newObj;
 		newObj.setPosition(placementIndex, window->getSize().y * 0.6);
