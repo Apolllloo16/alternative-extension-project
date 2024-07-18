@@ -131,14 +131,15 @@ int main()
 			wizardLevel.update(deltaTime);
 			wizardLevel.render();
 			break;
-		case State::PRE_ONE:
-		case State::PRE_TWO:
-		case State::PRE_THREE:
 		case State::ENDLESS:
 			runnerLevel.handleInput(deltaTime);
 			runnerLevel.update(deltaTime);
 			runnerLevel.render();
 			break;
+		case State::PRE_ONE:
+		case State::PRE_TWO:
+		case State::PRE_THREE:
+		case State::PRE_FOUR:
 		case State::ENDGAME:
 			// All four of these states are captured in the transition level
 			transLevel.handleInput(deltaTime);

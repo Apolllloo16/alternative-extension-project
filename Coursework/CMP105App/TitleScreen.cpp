@@ -68,7 +68,7 @@ void TitleScreen::handleInput(float dt)
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4))
 	{
-		gameState->setCurrentState(State::ENDLESS);
+		gameState->setCurrentState(State::PRE_FOUR);
 		gameState->setSingleRun(true);
 	}
 

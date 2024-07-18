@@ -17,7 +17,8 @@ enum class State {
 	RUNNER,
 	WIZARD,
 	RESET,
-	ENDLESS
+	ENDLESS,
+	PRE_FOUR
 };
 
 

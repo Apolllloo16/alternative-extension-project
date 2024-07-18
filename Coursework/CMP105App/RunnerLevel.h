@@ -4,6 +4,7 @@
 #include "Player.h"
 #include <random>
 #include <iostream>
+#include <string>
 
 class RunnerLevel : BaseLevel
 {
@@ -42,13 +43,16 @@ private:
 	const float MAX_SPEED = 650;
 	const float ACCELERATION = 250;
 
+	int score = 0;
 	int hits = 0;
 	float time = 0.f;
 	float objects = 0.f;
 	
 	bool endless = false;
+	bool objectsGenerated = false;
 
-
+	sf::Text scoreDisplay;
+	sf::Font montsFont;
 
 	sf::CircleShape life1;
 	sf::CircleShape life2;

@@ -41,6 +41,9 @@ void TransitionLevel::handleInput(float dt)
 		case State::PRE_THREE:
 			gameState->setCurrentState(State::WIZARD);
 			break;
+		case State::PRE_FOUR:
+			gameState->setCurrentState(State::ENDLESS);
+			break;
 		case State::ENDGAME:
 			gameState->setCurrentState(State::RESET);
 			break;
@@ -62,7 +65,7 @@ void TransitionLevel::update(float dt)
 	case State::PRE_THREE:
 		explain.setString("Move with WASD.\nMove in time with the claps.\nAvoid Tanks and Pits.\nThere is a checkpoint.\nYou will be assisted.\nKind of.\nHit Enter.\nGood Luck.");
 		break;
-	case State::ENDLESS:
+	case State::PRE_FOUR:
 		explain.setString("This is the runner mode but endless.\nKick (enter) wooden boxes.\nJump over (space) metal ones.\nYou got this.\nGood Luck.\nHit Enter");
 		break;
 	case State::ENDGAME:

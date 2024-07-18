@@ -36,6 +36,12 @@ RunnerLevel::RunnerLevel(sf::RenderWindow* hwnd, Input* in, GameState* gs, Audio
 	life3.setOutlineThickness(2);
 	life3.setPosition(800, 30);
 
+	montsFont.loadFromFile("font/montS.ttf");
+	scoreDisplay.setFont(montsFont);
+	scoreDisplay.setCharacterSize(40);
+	scoreDisplay.setPosition(50, 50);
+	scoreDisplay.setString("Time survived: " + std::to_string(score));
+
 	// setup BGs as ten images next to each other. base dimensions 1024x1024
 	float bgScalar = hwnd->getSize().y / 1024.0f;
 	for (int i = 0; i < 1000; ++i)
@@ -54,45 +60,7 @@ RunnerLevel::RunnerLevel(sf::RenderWindow* hwnd, Input* in, GameState* gs, Audio
 	finishLine.setPosition(distance, window->getSize().y * 0.5);
 	finishLine.setFillColor(sf::Color::Yellow);
 
-	float placementIndex = 0.f;
-	while (placementIndex < distance2)
-	{
-		// go forward a random distance:
-		placementIndex += getRandomInt(650,800);
-		// harder in the back half.
-		if (placementIndex > distance2 / 2) placementIndex -= getRandomInt(100, 250);	
-		if (placementIndex > distance2) break;
-	
-		objects += 1;
-		GameObject newObj;
-		newObj.setPosition(placementIndex, window->getSize().y * 0.6);
-		newObj.setSize(sf::Vector2f(window->getSize().y * 0.1, window->getSize().y * 0.1));
-		// randomly put a jumpable, kickable or two-jumpables next to each other
-		int seed = getRandomInt(0, 2);
-		switch (seed)
-		{
-		case 0:
-			// kickable
-			newObj.setTexture(&textMan->getTexture("kickable"));
-			newObj.setPosition(placementIndex, window->getSize().y * 0.5);
-			newObj.setSize(sf::Vector2f(window->getSize().y * 0.1, window->getSize().y * 0.2));
-			kickables.push_back(newObj);
-			break;
-		case 1:
-			// jumpable
-			newObj.setTexture(&textMan->getTexture("jumpable"));
-			jumpables.push_back(newObj);
-			break;
-		case 2:
-			newObj.setTexture(&textMan->getTexture("jumpable"));
-			jumpables.push_back(newObj);
-			GameObject secondObj = newObj;
-			secondObj.setPosition(secondObj.getPosition().x + secondObj.getSize().x, secondObj.getPosition().y);
-			jumpables.push_back(secondObj);
-			break;
-		}
-	}
-	
+
 	// setup Player
 	p.setPosition(30, window->getSize().y * 0.6);
 	speed = 0.f;
@@ -113,12 +81,102 @@ RunnerLevel::RunnerLevel(sf::RenderWindow* hwnd, Input* in, GameState* gs, Audio
 
 	p.setDamaged(0.5);
 
+
+
 }
 
 RunnerLevel::~RunnerLevel()
 {
 }
 
+
+void RunnerLevel::generateObstacles()
+{
+	if (gameState->getCurrentState() == State::ENDLESS)
+	{
+		float placementIndex = 0.f;
+		while (placementIndex < distance2)
+		{
+			// go forward a random distance:
+			placementIndex += getRandomInt(650, 800);
+			// harder in the back half.
+			if (placementIndex > distance2 / 2) placementIndex -= getRandomInt(100, 250);
+			if (placementIndex > distance2) break;
+
+			objects += 1;
+			GameObject newObj;
+			newObj.setPosition(placementIndex, window->getSize().y * 0.6);
+			newObj.setSize(sf::Vector2f(window->getSize().y * 0.1, window->getSize().y * 0.1));
+			// randomly put a jumpable, kickable or two-jumpables next to each other
+			int seed = getRandomInt(0, 2);
+			switch (seed)
+			{
+			case 0:
+				// kickable
+				newObj.setTexture(&textMan->getTexture("kickable"));
+				newObj.setPosition(placementIndex, window->getSize().y * 0.5);
+				newObj.setSize(sf::Vector2f(window->getSize().y * 0.1, window->getSize().y * 0.2));
+				kickables.push_back(newObj);
+				break;
+			case 1:
+				// jumpable
+				newObj.setTexture(&textMan->getTexture("jumpable"));
+				jumpables.push_back(newObj);
+				break;
+			case 2:
+				newObj.setTexture(&textMan->getTexture("jumpable"));
+				jumpables.push_back(newObj);
+				GameObject secondObj = newObj;
+				secondObj.setPosition(secondObj.getPosition().x + secondObj.getSize().x, secondObj.getPosition().y);
+				jumpables.push_back(secondObj);
+				break;
+			}
+		}
+	}
+
+	if (gameState->getCurrentState() == State::RUNNER)
+	{
+		float placementIndex = 0.f;
+		while (placementIndex < distance)
+		{
+			// go forward a random distance:
+			placementIndex += getRandomInt(650, 800);
+			// harder in the back half.
+			if (placementIndex > distance / 2) placementIndex -= getRandomInt(100, 250);
+			if (placementIndex > distance) break;
+
+			objects += 1;
+			GameObject newObj;
+			newObj.setPosition(placementIndex, window->getSize().y * 0.6);
+			newObj.setSize(sf::Vector2f(window->getSize().y * 0.1, window->getSize().y * 0.1));
+			// randomly put a jumpable, kickable or two-jumpables next to each other
+			int seed = getRandomInt(0, 2);
+			switch (seed)
+			{
+			case 0:
+				// kickable
+				newObj.setTexture(&textMan->getTexture("kickable"));
+				newObj.setPosition(placementIndex, window->getSize().y * 0.5);
+				newObj.setSize(sf::Vector2f(window->getSize().y * 0.1, window->getSize().y * 0.2));
+				kickables.push_back(newObj);
+				break;
+			case 1:
+				// jumpable
+				newObj.setTexture(&textMan->getTexture("jumpable"));
+				jumpables.push_back(newObj);
+				break;
+			case 2:
+				newObj.setTexture(&textMan->getTexture("jumpable"));
+				jumpables.push_back(newObj);
+				GameObject secondObj = newObj;
+				secondObj.setPosition(secondObj.getPosition().x + secondObj.getSize().x, secondObj.getPosition().y);
+				jumpables.push_back(secondObj);
+				break;
+			}
+		}
+	}
+
+}
 
 void RunnerLevel::handleInput(float dt)
 {
@@ -146,17 +204,22 @@ bool RunnerLevel::colliding(GameObject obj)
 
 void RunnerLevel::update(float dt)
 {
+	score = time;
+	scoreDisplay.setString("Time survived: " + std::to_string(score));
 
+
+	if (objectsGenerated == false)
+	{
+		generateObstacles();
+		objectsGenerated = true;
+	}
 
 	if (p.getPosition().y > window->getSize().y * 0.6)
 	{
 		p.setPosition(30, window->getSize().y * 0.6);
 	}
 
-	if (endless)
-	{
-
-	}
+	
 
 	if (gameState->getCurrentState() ==State::ENDLESS )
 	{
@@ -183,25 +246,27 @@ void RunnerLevel::update(float dt)
 
 	}
 
-	if (hits == 1)
+	if (endless)
 	{
-		life3.setFillColor(sf::Color::Transparent);
-		life3.setOutlineColor(sf::Color::Transparent);
+
+		if (hits == 1)
+		{
+			life3.setFillColor(sf::Color::Transparent);
+			life3.setOutlineColor(sf::Color::Transparent);
+		}
+		else if (hits == 2)
+		{
+			life2.setFillColor(sf::Color::Transparent);
+			life2.setOutlineColor(sf::Color::Transparent);
+		}
+		else if (hits == 3)
+		{
+			gameState->addResult("l2deaths", hits);
+			gameState->addResult("l2time", time);
+
+			gameState->setCurrentState(State::ENDGAME);
+		}
 	}
-	else if (hits == 2)
-	{
-		life2.setFillColor(sf::Color::Transparent);
-		life2.setOutlineColor(sf::Color::Transparent);
-	}
-	else if (hits==3)
-	{
-		gameState->addResult("l2deaths", hits);
-		gameState->addResult("l2time", time);
-		
-		gameState->setCurrentState(State::ENDGAME);
-		
-	}
-	
 
 
 	time += dt;
@@ -268,10 +333,7 @@ void RunnerLevel::update(float dt)
 	// check for collisions
 	if (p.isDamaged())
 	{
-		if (endless)
-		{
-	
-		}
+		
 		return;
 	}
 	for (int i = 0; i < kickables.size(); ++i)// k : kickables)
@@ -316,6 +378,8 @@ void RunnerLevel::update(float dt)
 		}
 	}
 
+
+
 }
 
 void RunnerLevel::render()
@@ -345,6 +409,7 @@ void RunnerLevel::render()
 		window->draw(life1);
 		window->draw(life2);
 		window->draw(life3);
+		window->draw(scoreDisplay);
 		for (GameObject e : explosions) window->draw(e);
 		window->draw(moon);
 	}
@@ -360,7 +425,8 @@ void RunnerLevel::reset()
 	objects = 0.f;
 	travelled = 0.f;
 	endless = false;
-	
+	objectsGenerated = false;
+	score = 0;
 
 	// setup Player
 	p.setPosition(30, window->getSize().y * 0.6);
@@ -386,43 +452,6 @@ void RunnerLevel::reset()
 		BGs.push_back(bg);
 	}
 
-	float placementIndex = 0.f;
-	while (placementIndex < distance2)
-	{
-		// go forward a random distance:
-		placementIndex += getRandomInt(650, 800);
-		// harder in the back half.
-		if (placementIndex > distance2 / 2) placementIndex -= getRandomInt(100, 250);
-		if (placementIndex > distance2) break;
-		objects += 1;
-		GameObject newObj;
-		newObj.setPosition(placementIndex, window->getSize().y * 0.6);
-		newObj.setSize(sf::Vector2f(window->getSize().y * 0.1, window->getSize().y * 0.1));
-		// randomly put a jumpable, kickable or two-jumpables next to each other
-		int seed = getRandomInt(0, 2);
-		switch (seed)
-		{
-		case 0:
-			// kickable
-			newObj.setTexture(&textMan->getTexture("kickable"));
-			newObj.setPosition(placementIndex, window->getSize().y * 0.5);
-			newObj.setSize(sf::Vector2f(window->getSize().y * 0.1, window->getSize().y * 0.2));
-			kickables.push_back(newObj);
-			break;
-		case 1:
-			// jumpable
-			newObj.setTexture(&textMan->getTexture("jumpable"));
-			jumpables.push_back(newObj);
-			break;
-		case 2:
-			newObj.setTexture(&textMan->getTexture("jumpable"));
-			jumpables.push_back(newObj);
-			GameObject secondObj = newObj;
-			secondObj.setPosition(secondObj.getPosition().x + secondObj.getSize().x, secondObj.getPosition().y);
-			jumpables.push_back(secondObj);
-			break;
-		}
-	}
 	finishLine.setPosition(distance, window->getSize().y * 0.5);
 	p.setDamaged(0.5);
 }
