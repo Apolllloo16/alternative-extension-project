@@ -86,6 +86,11 @@ void TransitionLevel::update(float dt)
 			resultsString += "Level 3 deaths:\t\t\t" + std::to_string(results->L3Deaths) + "\n";
 			resultsString += "Level 3 time:\t\t\t" + std::to_string(results->L3Time) + " seconds\n";
 		}
+		if (results->L4Time > 0)
+		{
+			resultsString += "Deaths\t\t\t" + std::to_string(results->L4Deaths) + "\n";
+			resultsString += "Time Survived:\t\t\t" + std::to_string(results->L4Time) + " seconds\n\n";
+		}
 		explain.setString(resultsString + "\nPress Enter to continue.");
 		break;
 	}

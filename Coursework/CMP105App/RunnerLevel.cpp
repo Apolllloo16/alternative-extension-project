@@ -261,8 +261,8 @@ void RunnerLevel::update(float dt)
 		}
 		else if (hits == 3)
 		{
-			gameState->addResult("l2deaths", hits);
-			gameState->addResult("l2time", time);
+			gameState->addResult("deaths", hits);
+			gameState->addResult("Time Survived: ", time);
 
 			gameState->setCurrentState(State::ENDGAME);
 		}
