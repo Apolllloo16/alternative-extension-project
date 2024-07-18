@@ -4,6 +4,7 @@
 #include "Player.h"
 #include <random>
 #include <iostream>
+#include <string>
 
 class RunnerLevel : BaseLevel
 {
@@ -11,6 +12,7 @@ public:
 	RunnerLevel(sf::RenderWindow* hwnd, Input* in, GameState* gs, AudioManager* aud, TextureManager* tm);
 	~RunnerLevel();
 
+	void generateObstacles();
 	void handleInput(float dt) override;
 	void update(float dt) override;
 	void render() override;
@@ -34,14 +36,26 @@ private:
 	GameObject finishLine;
 
 	float distance;
+	float distance2;
 	float travelled = 0.f;
 	float speed;
 
 	const float MAX_SPEED = 650;
 	const float ACCELERATION = 250;
 
+	int score = 0;
 	int hits = 0;
 	float time = 0.f;
 	float objects = 0.f;
+	
+	bool endless = false;
+	bool objectsGenerated = false;
+
+	sf::Text scoreDisplay;
+	sf::Font montsFont;
+
+	sf::CircleShape life1;
+	sf::CircleShape life2;
+	sf::CircleShape life3;
 };
 
